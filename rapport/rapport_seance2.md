@@ -18,7 +18,7 @@ Le lidar devra être seul sur la plateforme supérieure du robot ou bien sur une
 J’ai aussi remarqué que la connexion avec l’Arduino méga posait quelque problème pour le téléversement du code, il y a une erreur qui survient assez souvent 
 (Message d’erreur : <b>avrdude: stk500v2_getsync(): timeout communicating with programmer</b> ). Il s’avère que mon ordinateur ne la détecte forcément quand je la branche. Cependant j’arrive tout de même à envoyer le code après 2 ou 3 essais. 
 
-<img src="../../tree/main/rapport/images/photo1.JPG" alt = "Etat actuel du robot.">
+<img src="../../../tree/main/rapport/images/photo1.JPG" alt = "Etat actuel du robot.">
 </div>
 
 <h2>Tests avec le lidar :</h2>
