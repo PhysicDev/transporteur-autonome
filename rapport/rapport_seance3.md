@@ -30,7 +30,7 @@ j'ai essayé de récupérer les données de l'accéléromètre à l'aide de ce <
 <h2>mise au point de l'algorithme </h2>
 <div style="text-align: justify">
 j'ai immaginé un algorithme qui permettrais au robot de se déplacer jusqu'à une cible en prenant en compte les obstacles, il consiste en un réseaux de neurones entrainé sur ordinateur, l'arduino ne devra qu'exécuter un réseaux de neurones déjà entrainé.</br></br> les données de position et d'orientation seront donné relativement à la position cible de manière à ce que l'objectif du robot soit toujours d'atteindre les coordonées 0;0</br></br> le réseaux de neurone retournera la vitesses désirée des deux roues et les encodeurs permetrons de calculer la puissance qu'il faut donner aux moteurs.
-<img src="../../../tree/main/schema/images/algorithme.png" alt = "schéma de l'algorithme.">
+<img src="../../../tree/main/schema/algorithme.png" alt = "schéma de l'algorithme.">
 </div>
 </br></br>
 <div>
