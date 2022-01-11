@@ -1,5 +1,3 @@
-// code de test récuperé ici https://wiki.dfrobot.com/10_DOF_Sensor__SKU_SEN0140
-
 //il y a peu être des librairies inutiles 
 // penser à les suprimmer
 #include <FreeSixIMU.h>
