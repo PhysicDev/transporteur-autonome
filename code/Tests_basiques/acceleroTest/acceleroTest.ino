@@ -6,16 +6,21 @@
 #include <Adafruit_MPU6050.h>//https://github.com/adafruit/Adafruit_MPU6050
 #include <Adafruit_Sensor.h>//https://github.com/adafruit/Adafruit_Sensor
 //Objects
+
+
+#define AD0 13 // pin de l'acceléromètre pour changer son adresse
+
 Adafruit_MPU6050 mpu;
 void setup() {
  //Init Serial USB
  Serial.begin(9600);
  Serial.println(F("Initialize System"));
-if (!mpu.begin(0x69)) { // Change address if needed
+ 
+  pinMode(AD0,OUTPUT);
+  digitalWrite(AD0,HIGH);
+  if (!mpu.begin(0x69,&Wire,1)) {
+   //si ça marche pas
    Serial.println("Failed to find MPU6050 chip");
-   while (1) {
-     delay(10);
-   }
  }
  mpu.setAccelerometerRange(MPU6050_RANGE_16_G);
  mpu.setGyroRange(MPU6050_RANGE_250_DEG);
@@ -26,7 +31,6 @@ void loop() {
  delay(100);
 }
 void readMPU( ) { /* function readMPU */
- ////Read acceleromter data
  sensors_event_t a, g, temp;
  mpu.getEvent(&a, &g, &temp);
  /* Print out the values */
@@ -36,7 +40,7 @@ void readMPU( ) { /* function readMPU */
  Serial.print(a.acceleration.y);
  Serial.print(", Z: ");
  Serial.print(a.acceleration.z);
- Serial.println(" m/s^2");
+ Serial.print(" m/s^2 || ");
  Serial.print("Rotation X: ");
  Serial.print(g.gyro.x);
  Serial.print(", Y: ");
@@ -44,7 +48,4 @@ void readMPU( ) { /* function readMPU */
  Serial.print(", Z: ");
  Serial.print(g.gyro.z);
  Serial.println(" rad/s");
- Serial.print("Temperature: ");
- Serial.print(temp.temperature);
- Serial.println("°C");
 }

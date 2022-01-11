@@ -12,7 +12,7 @@ const int IN3 = 6;
 const int IN4 = 7;
 
 //les pins des encodeurs
-const int interR = 3;
+const int interR = 3;//pin déplacé pour laisser place au lidar
 const int dirR = 24;
 const int interL = 2;
 const int dirL = 28;
