@@ -30,6 +30,8 @@ void loop() {
 
   sixDOF.getEuler(angles);
 
+  angles[0]+=1;
+  
   Serial.print(angles[0]);
   Serial.print(" | ");
   Serial.print(angles[1]);
