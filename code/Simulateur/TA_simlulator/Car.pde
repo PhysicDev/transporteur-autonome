@@ -133,7 +133,6 @@ public class Car{
     line(x,y,x+Vtan*sin(angle),y+Vtan*cos(angle));
     stroke(255,0,0);
     strokeWeight(1);
-    line(x,y,x+Atan*sin(angle),y+Atan*cos(angle));
-    line(x,y,x+Anorm*cos(angle),y-Anorm*sin(angle));
+    line(x,y,x+Atan*sin(angle)+Anorm*cos(angle),y+Atan*cos(angle)-Anorm*sin(angle));
   }
 }

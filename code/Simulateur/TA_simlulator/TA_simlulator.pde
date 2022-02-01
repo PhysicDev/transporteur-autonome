@@ -16,7 +16,9 @@ float heightOffset=300;
 float maxWallL=600;
 
 Button reset;
+Button resetC;
 Slider obstacleControl;
+Slider carControl;
 
 //police d'écriture
 PFont mainFont;
@@ -33,6 +35,12 @@ void setup(){
   textFont(mainFont);
   float[] radius={5,5,5,5};
   
+  resetC=new Button("reset cars",170,Boff,170,40);;
+  resetC.set_text(color(240),50f,mainFont,0f,-5f);
+  resetC.set_fill(color(130,110,50));
+  resetC.set_stroke(color(140),3,radius);
+  resetC.click_effect = true;
+  
   //GUIinit
   reset=new Button("reset",40,Boff,100,40);Boff+=100;
   reset.set_text(color(240),50f,mainFont,0f,-5f);
@@ -47,6 +55,14 @@ void setup(){
   obstacleControl.round_value = true;
   obstacleControl.show_value = true;
   
+  
+  carControl = new Slider("nombres de voitures",40,Boff,400,0,4,color(#6991AC),3);Boff+=90;
+  carControl.set_text("nombres de voitures",color(240),40,mainFont);
+  carControl.set_grad(0,30,5,1,10);
+  carControl.set_cursor(1,10,20,color(#bfd6e5),color(#bfd6e5),0);
+  carControl.round_value = true;
+  carControl.show_value = true;
+  
   size(displayWidth, displayHeight);
   surface.setResizable(true);
   resetEnv();
@@ -55,9 +71,10 @@ void setup(){
 }
 
 void resetCar(){
+  CarNum=(int)carControl.value;
+  cars= new Car[CarNum];
   for(int i=0;i<CarNum;i++){
     cars[i]=new Car((width+menuOffset)/2,100);
-    //cars[i].angle=random(2*PI);
     cars[i].setPower(random(10,30),random(10,30));
   }
 }
@@ -110,8 +127,15 @@ void draw(){
     resetEnv();
   }
   
+  
+  resetC.update();
+  if(resetC.activate){
+    resetCar();
+  }
+  
   textAlign(LEFT,TOP);
   textSize(20);
-  text("FPS : "+frameRate,70,height-50);
+  text("FPS : "+round(frameRate),70,height-250);
   obstacleControl.update();
+  carControl.update();
 }

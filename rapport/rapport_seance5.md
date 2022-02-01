@@ -71,7 +71,12 @@ J'ai prévu d'utiliser ma propre librairie Java de réseaux de neurones que vous
 pour l'instant le programme place des obstacles aléatoirement et place plusieurs voiture au point de départ.
 
 la vitesse des roues des voitures varie aléatoirement avec le temps
-<img src="../../../tree/main/rapport/images/screen1.JPG" alt = "état actuel du logiciel">
-<img src="../../../tree/main/rapport/images/screen2.JPG" alt = "état actuel du logiciel">
+<img src="../../../tree/main/rapport/images/screen1.png" alt = "état actuel du logiciel">
+<img src="../../../tree/main/rapport/images/screen2.png" alt = "état actuel du logiciel">
+
+note : les traits noit sur les voitures symbolise la vitesse; les traits rouges indiques l'accélération;
+
+
+le code peut être trouvé <a href="https://github.com/PhysicDev/transporteur-autonome/blob/main/code/Simulateur\TA_simlulator"> ici</a>.
 </br>
 </div>
