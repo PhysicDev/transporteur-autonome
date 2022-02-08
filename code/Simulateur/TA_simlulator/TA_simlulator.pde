@@ -7,8 +7,8 @@ Code intégrallement fait par Vincent Callegari (Physic Dev)
 On part du principe qu'un pixel vaut 0.5 cm
 
 **/
-int Obsnum=30;
-int CarNum=30;
+int Obsnum=1;
+int CarNum=1;
 Obstacle[] environment = new Obstacle[Obsnum];
 Car[] cars = new Car[CarNum];
 float menuOffset=500;
@@ -58,7 +58,7 @@ void setup(){
   
   carControl = new Slider("nombres de voitures",40,Boff,400,0,4,color(#6991AC),3);Boff+=90;
   carControl.set_text("nombres de voitures",color(240),40,mainFont);
-  carControl.set_grad(0,30,5,1,10);
+  carControl.set_grad(0,30,5,1,1);
   carControl.set_cursor(1,10,20,color(#bfd6e5),color(#bfd6e5),0);
   carControl.round_value = true;
   carControl.show_value = true;
@@ -74,7 +74,7 @@ void resetCar(){
   CarNum=(int)carControl.value;
   cars= new Car[CarNum];
   for(int i=0;i<CarNum;i++){
-    cars[i]=new Car((width+menuOffset)/2,100);
+    cars[i]=new Car((width+menuOffset)/2,400);
     cars[i].setPower(random(10,30),random(10,30));
   }
 }
@@ -91,6 +91,8 @@ void resetEnv(){
   }
 }
 
+public static int precision =360;
+
 void draw(){
   //background
   background(80);
@@ -99,8 +101,13 @@ void draw(){
     for(int i=0;i<10;i++){
       c.move(0.0017);
     }
-    c.setPower(min(500,max(-500,c.targetV1+random(-2,2))),min(500,max(-500,c.targetV2+random(-2,2))));
+    c.setPower(min(250,max(-250,c.targetV1+random(-2,2))),min(250,max(-250,c.targetV2+random(-2,2))));
     c.draw();
+    strokeWeight(0.5);
+    stroke(0,255,0);
+    for(int i=0;i<precision;i++){
+      c.rayCast(i*2*PI/precision,environment);
+    }
   }
   //environment
   stroke(240);

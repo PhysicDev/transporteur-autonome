@@ -1,5 +1,7 @@
 //rappel : un pixel correspond à 0.5cm
 
+import java.util.Arrays;
+
 //pour l'instant je suppose que le centre de gravité est entre les deux roues
 
 public static float conversion=200;//pour passer des pixels (0.5cm) aux mètres
@@ -7,7 +9,10 @@ public static float wheelAxe=30;//distance entre les roues (équivaut à 15cm)
 public static float maxAcc=1000;//accélération maximale possible (en pixels/s²)
 public static float maxMom=PI/2;//moment maximal possible (en rad/s²)
 
+public static float range= 10000;
 public static float MaxMotorSpeed = 200;//vitesse maximale des moteurs en pixel/s
+
+public static float[] empty =  {0f,0f};
 
 public static float Mass=1.5;//masse de la voiture en Kg
 
@@ -102,7 +107,59 @@ public class Car{
     ay = Anorm*sin(angle)+Atan*cos(angle);
   }
   
+  public int rayCast(float direction, Obstacle[] data){
+    direction-=angle;
+    float Y=sin(direction)*range;
+    float X=cos(direction)*range;
+    line(x,y,x+X*0.001,y+Y*0.001);
+    float minDistance=range;
+    float[] minInter={x+X,y+Y};
+    float[] Inter;
+    float distance;
+    for(Obstacle O:data){
+      Inter=intersection(O.X1,O.Y1,O.X2,O.Y2,x,y,x+X,y+Y);
+      if(Inter!=empty){
+        distance=dist(x,y,Inter[0],Inter[1]);
+        if(distance<minDistance){
+          minDistance=distance;
+          minInter=Inter.clone();
+        }
+      }
+    }
+    line(x,y,minInter[0],minInter[1]);
+    return(0);
+  }
   
+  /**
+    p=x,y
+    q=X1,Y1
+    r=X-x,Y-y
+    s=X2-X1,Y2-Y1
+  **/
+  
+  public float[] intersection(float Cx,float Cy,float Dx,float Dy,float Ax,float Ay,float Bx,float By) {
+    
+    float V1x=Bx-Ax;
+    float V1y=By-Ay;
+    float V2x=Cx-Dx;
+    float V2y=Cy-Dy;
+    if(V1x*V2y-V1y*V2x==0){
+      return(empty);
+    }
+    float kab=(V2x*(Ay-Cy)-(Ax-Cx)*V2y)/
+           (V2y*V1x-V1y*V2x);
+    float kcd=(V1x*(Cy-Ay)-(Cx-Ax)*V1y)/
+           (V1y*V2x-V2y*V1x);
+    if(kab>1||kab<0) {
+      return(empty);
+    }
+    if(kcd>0||kcd<-1) {
+      return(empty);
+    }
+    float[] result={V1x*kab+Ax,V1y*kab+Ay};
+    return(result);
+    //return(new Vecteur2(orig,fin).produit(kab).somme(new Vecteur2(orig)).getPoint());
+  }
   
   public void move(float deltaT){
     computeAcc(deltaT);
