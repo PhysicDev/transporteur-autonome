@@ -1,6 +1,7 @@
 //rappel : un pixel correspond à 0.5cm
 
 import java.util.Arrays;
+import java.util.ArrayList;
 
 //pour l'instant je suppose que le centre de gravité est entre les deux roues
 
@@ -8,9 +9,12 @@ public static float conversion=200;//pour passer des pixels (0.5cm) aux mètres
 public static float wheelAxe=30;//distance entre les roues (équivaut à 15cm)
 public static float maxAcc=1000;//accélération maximale possible (en pixels/s²)
 public static float maxMom=PI/2;//moment maximal possible (en rad/s²)
-
+public static float collisionDistance = 40;
 public static float range= 10000;
 public static float MaxMotorSpeed = 200;//vitesse maximale des moteurs en pixel/s
+
+//distance à partir de laquelle on considère les voitures comme voisines
+public static float neighDist = 100;
 
 public static float[] empty =  {0f,0f};
 
@@ -29,7 +33,8 @@ public class Car{
   private float A1,A2;//accélération des moteurs
   public float targetV1;
   public float targetV2;
-  
+  public float parcours=0;
+  public boolean collision=false;
   
   //on considère que la voiture ne peut pas basculer  
   public float angle;//orientation par rapport à la verticale
@@ -41,6 +46,55 @@ public class Car{
   public float Atan;
   public float Vtan;
   
+  public float[] BrainData = new float[precision+5];
+  
+  public float Fitness=0;
+  public float lastFitness=0;
+  public float deltaFit=0;
+  public float getFitness(){
+    float Fit= Fitness-dist(target[0],target[1],x,y);
+    //float Fit=0;
+    //si la voiture n'a presque pas bougé c'est une mauvais réseaux
+    if(dist(x,y,(width+menuOffset)/2,100)<600){
+      if(dist(x,y,(width+menuOffset)/2,100)<300){
+        Fit-=1500;
+      }
+      Fit-=1000;
+    } 
+    //si il n'y a pas eu de collision c'est bien
+    if(!collision){
+      Fit+=500;
+    }
+    return(Fit);
+  }
+  
+  //verifie si le robot est "mieux" que ses voisins
+  public void better(Car[] voisins){
+    float deltaFit = getFitness()-lastFitness;
+    float meanFit=0;
+    float maxFit=-Float.MAX_VALUE;
+    float minFit=Float.MAX_VALUE;
+    int neigh=0;
+    for(Car c:voisins){
+      if(dist(x,y,c.x,c.y)<neighDist && c!=this){
+        if(c.deltaFit>maxFit){
+          maxFit=c.deltaFit;
+        }
+        if(c.deltaFit<minFit){
+          minFit=c.deltaFit;
+        }
+        meanFit=((meanFit*neigh)+c.deltaFit)/(neigh+1);
+        neigh++;
+      }
+    }
+    //s'il y a asser de voisins pour pouvoir se comparer, on le fait
+    if(neigh>5){
+      if(deltaFit>4*(meanFit+maxFit)/5){
+          DataBase.add(new float[][]{BrainData,{targetV1,targetV2}});
+      }
+    }
+    lastFitness=getFitness();
+  }
   
   public Car(float X,float Y){
     x=X;y=Y;
@@ -106,12 +160,55 @@ public class Car{
     ax = Anorm*cos(angle)+Atan*sin(angle);
     ay = Anorm*sin(angle)+Atan*cos(angle);
   }
+  public void computeBrainData(){
+  
+    float Tdist=dist(target[0],target[1],x,y);
+    float difangle = acos((x-target[0])/Tdist)-angle;
+    if(difangle>PI){
+      difangle-=2*PI;
+    }
+    if(difangle<-PI){
+      difangle+=2*PI;
+    }
+    BrainData[precision+2]=difangle;
+    difangle+=PI;
+    if(difangle>PI){
+      difangle-=2*PI;
+    }
+    BrainData[precision+3]=difangle;
+    BrainData[precision]=Vtan;
+    BrainData[precision+1]=Anorm;
+    BrainData[precision+4]=dist(target[0],target[1],x,y);
+  
+  }
+  
+  public void move(float deltaT){
+    Fitness+=2;
+    computeAcc(deltaT);
+    /**
+    vx+=ax*deltaT;
+    vy+=ay*deltaT;
+    x+=vx*deltaT;
+    y+=vy*deltaT;**/
+    Vangle+=moment*deltaT;
+    float distance=Vtan*deltaT;
+    parcours+=distance;
+    x+=distance*sin(angle);
+    y+=distance*cos(angle);
+    angle+=Vangle*deltaT;
+    if(angle>PI){
+      angle-=2*PI;
+    }
+    if(angle<-PI){
+      angle+=2*PI;
+    }
+  }
   
   public int rayCast(float direction, Obstacle[] data){
     direction-=angle;
     float Y=sin(direction)*range;
     float X=cos(direction)*range;
-    line(x,y,x+X*0.001,y+Y*0.001);
+    //line(x,y,x+X*0.001,y+Y*0.001);
     float minDistance=range;
     float[] minInter={x+X,y+Y};
     float[] Inter;
@@ -126,7 +223,23 @@ public class Car{
         }
       }
     }
-    line(x,y,minInter[0],minInter[1]);
+    if(direction<0){
+      direction+=precision;
+    }
+    if(minDistance==range){
+      BrainData[(int)direction]=999;
+      //set distance to zero
+    }else if(minDistance<collisionDistance*3){
+      BrainData[(int)direction]=minDistance;//500/minDistance-1;
+      if(minDistance<collisionDistance){
+        Fitness-=1;
+        collision=true;
+      }
+      //collision so set bad fitness
+    }else{
+      BrainData[(int)direction]=minDistance;//50/minDistance-0.7;
+    }
+    //line(x,y,minInter[0],minInter[1]);
     return(0);
   }
   
@@ -161,29 +274,19 @@ public class Car{
     //return(new Vecteur2(orig,fin).produit(kab).somme(new Vecteur2(orig)).getPoint());
   }
   
-  public void move(float deltaT){
-    computeAcc(deltaT);
-    /**
-    vx+=ax*deltaT;
-    vy+=ay*deltaT;
-    x+=vx*deltaT;
-    y+=vy*deltaT;**/
-    Vangle+=moment*deltaT;
-    float distance=Vtan*deltaT;
-    x+=distance*sin(angle);
-    y+=distance*cos(angle);
-    angle+=Vangle*deltaT;
-    angle=(angle+2*PI)%(2*PI);//on ajoute 2*pi pour éviter les problèmes avec le module de nombre négatif
-  }
   
   public void draw(){
     noStroke();
-    fill(#66d8db);
+    if(collision){
+      fill(102-Fitness/10,216+(Fitness)/10+50,102);
+    }else{
+      fill(102,216,219);
+    }
     pushMatrix();
     rectMode(CENTER);
     translate(x, y);
     rotate(-angle);
-    rect(0, 20, 30, 50);
+    rect(0, -20, 30, 50);
     popMatrix();
     stroke(1);
     strokeWeight(2);
@@ -191,5 +294,7 @@ public class Car{
     stroke(255,0,0);
     strokeWeight(1);
     line(x,y,x+Atan*sin(angle)+Anorm*cos(angle),y+Atan*cos(angle)-Anorm*sin(angle));
+    //line(x,y,x+10,y);
+    //text(angle,x,y);
   }
 }

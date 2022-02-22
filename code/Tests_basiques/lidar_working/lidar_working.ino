@@ -13,7 +13,6 @@ void setup() {
   lidar.begin(COM);
   COM.begin(115200);
   Serial.begin(9600);
-  Serial.print("BRUH");
   // set pin modes
   pinMode(MotorCtrl, OUTPUT);
 }
@@ -45,14 +44,14 @@ void loop() {
        }
     }
   } else {
-    analogWrite(MotorCtrl, 128); //stop the rplidar motor
-    
-       Serial.println("NOT working");
+    analogWrite(MotorCtrl, 0); //stop the rplidar motor
+    Serial.println("NOT working");
     // try to detect RPLIDAR... 
     rplidar_response_device_info_t info;
+    rplidar_response_device_health_t HP;
     if (IS_OK(lidar.getDeviceInfo(info, 100))) {
        //detected...
-       Serial.print("BRUH");
+       Serial.print(lidar.getHealth(HP, 100));
        lidar.startScan();
        analogWrite(MotorCtrl, 255);
        delay(1000);
