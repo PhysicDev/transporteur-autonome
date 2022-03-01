@@ -35,7 +35,7 @@ sensors_event_t a, g, temp;
 
 
 //ENCODEUR ET MOTEUR
-#define DIST 2000
+#define DIST 4000
 
 //variable des pins
 const int enableL = 9;
@@ -48,8 +48,8 @@ const int IN3 = 6;
 const int IN4 = 7;
 
 //rotation par secondesx1000
-int RightRPS = 350;
-int LeftRPS = 350;
+int RightRPS = 1000;
+int LeftRPS = 1000;
 
 //les pins des encodeurs
 //les pins dirL et dirL ne sont pas branché car non utilisé
@@ -161,6 +161,8 @@ void loop() {
     digitalWrite(IN2,1);
     digitalWrite(IN3,0);
     digitalWrite(IN4,1);
+    RightRPS = 500;
+    LeftRPS=500;
     distance=0;
     startAngle=angle[2];
     //angle[2]=0;
@@ -171,6 +173,8 @@ void loop() {
     digitalWrite(IN2,0);
     digitalWrite(IN3,0);
     digitalWrite(IN4,1);
+    RightRPS = 1000;
+    LeftRPS=1000;
     distance=0;
     state=true;
  }
@@ -187,8 +191,8 @@ void loop() {
 
 
 void updateMotor(float deltaT){
-  RightRot=float(RwheelPulse)/deltaT;
-  LeftRot=float(LwheelPulse)/deltaT;
+  RightRot=1000*float(RwheelPulse)/deltaT;
+  LeftRot=1000*float(LwheelPulse)/deltaT;
   distance+=(RwheelPulse+LwheelPulse)/2;
   LwheelPulse=0;
   RwheelPulse=0;

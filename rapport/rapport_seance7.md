@@ -28,7 +28,7 @@ le code est disponible <a href="https://github.com/PhysicDev/transporteur-autono
 
 cependant les tests en réel (avec les moteurs ont révélé un décalage important pour les angles (pour des rotations de 90° , le robot à une marge d'erreur de 30°)). Je pense que c'est du en partie à un problème de code mais l'idée d'avoir un cible précise semble être comprimise (une direction global vers laquelle aller est plus envisageable)
 
-le code est disponible <a href="https://github.com/PhysicDev/transporteur-autonome/blob/main/code/Tests_avancé/positionTest/positionTest.ino"> ici</a>. (sans les encodeurs car ils ça surchagerait inutilment le code).
+le code est disponible <a href="https://github.com/PhysicDev/transporteur-autonome/blob/main/code/Tests_avancé/turnAround/turnAround.ino"> ici</a>. (sans les encodeurs car ils ça surchagerait inutilment le code).
 
 </div>
 

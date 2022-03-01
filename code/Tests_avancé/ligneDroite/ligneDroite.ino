@@ -13,8 +13,8 @@ const int IN3 = 6;
 const int IN4 = 7;
 
 //rotation par secondesx1000
-#define RightRPS 500
-#define LeftRPS 500
+#define RightRPS 900
+#define LeftRPS 900
 
 //les pins des encodeurs
 //les pins dirL et dirL ne sont pas branché car non utilisé
@@ -70,8 +70,9 @@ void loop() {
   deltaT=millis()-lastFrame;
   lastFrame=millis();
   
-  RightRot=float(RwheelPulse)/deltaT;
-  LeftRot=float(LwheelPulse)/deltaT;
+  RightRot=1000*float(RwheelPulse)/deltaT;
+  LeftRot=1000*float(LwheelPulse)/deltaT;
+  
   LwheelPulse=0;
   RwheelPulse=0;
   if(RightRot>RightRPS){
@@ -86,7 +87,6 @@ void loop() {
   }
   Rmotor= constrain(Rmotor,0,255);
   Lmotor= constrain(Lmotor,0,255);
-  
   analogWrite(enableR,Rmotor);
   analogWrite(enableL,Lmotor);
   delay(5);
