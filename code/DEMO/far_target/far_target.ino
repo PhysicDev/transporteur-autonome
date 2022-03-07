@@ -58,8 +58,8 @@ const int IN3 = 6;
 const int IN4 = 7;
 
 //rotations cibles par secondesx1000
-int RightRPS = 350;
-int LeftRPS = 350;
+int RightRPS = 500;
+int LeftRPS = 500;
 
 //les pins des encodeurs
 //les pins dirR et dirL ne sont pas branché car non utilisé
@@ -176,8 +176,8 @@ void loop() {
   }else{
     //mis à jour en fonction de l'état :
     if(state){
-      for(int i=-2;i<3;i++){
-        if((distances[180+i]<500 && distances[90+i]>10)){
+      for(int i=-4;i<5;i++){
+        if((distances[180+i]<500 && distances[180+i]>10)){
          Serial.print(distances[i]);
          Serial.print(" ");
          Serial.print(distances[259-i]);
@@ -199,8 +199,8 @@ void loop() {
             targetAngle+=2*PI;
           }
           //on tourne lentement pour une meilleure précision
-          RightRPS=350;
-          LeftRPS=350;
+          RightRPS=500;
+          LeftRPS=500;
           state=false;
           break;
         }
@@ -502,6 +502,8 @@ void bluetooth(){
             digitalWrite(IN2,0);
             digitalWrite(IN3,0);
             digitalWrite(IN4,1);
+            RightRPS=500;
+            LeftRPS=500;
         }
         if(data=='S'){
           OnOff=false;
