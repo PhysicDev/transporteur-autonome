@@ -58,8 +58,8 @@ const int IN3 = 6;
 const int IN4 = 7;
 
 //rotations cibles par secondesx1000
-int RightRPS = 500;
-int LeftRPS = 500;
+int RightRPS = 700;
+int LeftRPS = 700;
 
 //les pins des encodeurs
 //les pins dirR et dirL ne sont pas branché car non utilisé
@@ -176,8 +176,8 @@ void loop() {
   }else{
     //mis à jour en fonction de l'état :
     if(state){
-      for(int i=-4;i<5;i++){
-        if((distances[180+i]<500 && distances[180+i]>10)){
+      for(int i=-2;i<3;i++){
+        if((distances[180+i]<700 && distances[180+i]>10)){
          Serial.print(distances[i]);
          Serial.print(" ");
          Serial.print(distances[259-i]);
@@ -199,8 +199,8 @@ void loop() {
             targetAngle+=2*PI;
           }
           //on tourne lentement pour une meilleure précision
-          RightRPS=500;
-          LeftRPS=500;
+          RightRPS=700;
+          LeftRPS=700;
           state=false;
           break;
         }
@@ -436,14 +436,14 @@ void updateMotor(float deltaT){
   RwheelPulse=0;
   //on corrige :
   if(RightRot>RightRPS){
-    Rmotor-=2;
+    Rmotor-=4;
   }else{
-    Rmotor+=2;
+    Rmotor+=4;
   }
   if(LeftRot>LeftRPS){
-    Lmotor-=2;
+    Lmotor-=4;
   }else{
-    Lmotor+=2;
+    Lmotor+=4;
   }
   //on met à jour
   Rmotor= constrain(Rmotor,0,255);
@@ -502,8 +502,8 @@ void bluetooth(){
             digitalWrite(IN2,0);
             digitalWrite(IN3,0);
             digitalWrite(IN4,1);
-            RightRPS=500;
-            LeftRPS=500;
+            RightRPS=700;
+            LeftRPS=700;
         }
         if(data=='S'){
           OnOff=false;
